@@ -1,0 +1,59 @@
+---
+version: "3"
+
+services:
+  db:
+    build:
+      context: "./"
+      dockerfile: ".docker/development.dockerfile"
+    image: "database:latest"
+    restart: always
+    volumes:
+      # - ./initial_data:/docker-entrypoint-initdb.d
+      - dbdata:/var/lib/mysql:rw
+    ports:
+      - "3306:3306"
+    network_mode: bridge
+
+    environment:
+      MYSQL_ROOT_PASSWORD: "secret"
+      MYSQL_DATABASE: "default"
+      MYSQL_USER: "default"
+      MYSQL_PASSWORD: "secret"
+
+    cpu_shares: 128
+    mem_reservation: 128m
+    mem_limit: 256m
+    memswap_limit: -1
+    privileged: true
+    container_name: db
+
+  # adminer:
+  #   image: adminer:4.8.1
+  #   restart: always
+  #   ports:
+  #     - "33080:8080"
+  #   # depends_on:
+  #   #   - db
+  #   # links:
+  #   #   - db
+  #   network_mode: bridge
+
+  #   environment:
+  #     ADMINER_DEFAULT_SERVER: db
+  #     ADMINER_DESIGN: pepa-linha-dark
+  #     # ADMINER_DESIGN: nette
+  #     # ADMINER_DESIGN: mancave
+  #     # ADMINER_DESIGN: galkaev
+  #     # ADMINER_DESIGN: hydra
+
+  #   cpu_shares: 128
+  #   mem_reservation: 128m
+  #   mem_limit: 256m
+  #   memswap_limit: -1
+  #   privileged: true
+  #   container_name: adminer
+
+volumes:
+  dbdata:
+    name: database
